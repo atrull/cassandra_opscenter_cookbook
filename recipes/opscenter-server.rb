@@ -87,7 +87,7 @@ execute "Start Datastax OpsCenter" do
   group     "#{node[:cassandra][:opscenter][:group]}"
   cwd       node[:cassandra][:opscenter][:home]
   not_if    "pgrep -f start_opscenter.py"
-  notifies :run, "bash[Run Datastax Opscenter Setup]", :immediately
+  notifies :run, "execute[Run Datastax Opscenter Setup]", :immediately
 end
 
 # Run setup to create the agent.tar.gz
