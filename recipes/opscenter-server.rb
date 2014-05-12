@@ -87,16 +87,16 @@ execute "Start Datastax OpsCenter" do
   group     "#{node[:cassandra][:opscenter][:group]}"
   cwd       node[:cassandra][:opscenter][:home]
   not_if    "pgrep -f start_opscenter.py"
-  notifies :run, "execute[Run Datastax Opscenter Setup]", :immediately
 end
 
 # Run setup to create the agent.tar.gz
-execute "Run Datastax OpsCenter Setup" do
+execute "Run Datastax Opscenter Setup" do
   command   "#{node[:cassandra][:opscenter][:home]}/bin/setup.py"
   user      "#{node[:cassandra][:opscenter][:user]}"
   group     "#{node[:cassandra][:opscenter][:group]}"
   cwd       node[:cassandra][:opscenter][:home]
   notifies :run, "bash[Short Delay for Opscenter Server Startup]", :immediately
+  not_if { ::File.exists?("#{node[:cassandra][:opscenter][:home]}/agent.tar.gz") }
 end
 
 # We cause a delay after startup so that the agent.tar.gz can be created and permissions set afterwards
@@ -105,7 +105,6 @@ bash "Short Delay for Opscenter Server Startup" do
   sleep 15
   EOH
   action :nothing
-  not_if { ::File.exists?("#{node[:cassandra][:opscenter][:home]}/agent.tar.gz") }
 end
 
 # Set everyone-readable permissions on agent.tar.gz so nginx can read it and other nodes can get it.
