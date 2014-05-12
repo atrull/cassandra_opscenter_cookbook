@@ -23,9 +23,9 @@ default[:cassandra][:opscenter][:parentdir] = "/opt"
 default[:cassandra][:opscenter][:home] = "#{node[:cassandra][:opscenter][:parentdir]}/opscenter"
 
 # What version to install, where to get it and a checksum to guarantee it is valid.
-default[:cassandra][:opscenter][:version] = "3.2.2"
-default[:cassandra][:opscenter][:src_url] = "http://downloads.datastax.com/community/opscenter-#{node['cassandra']['opscenter']['version']}-free.tar.gz"
-default[:cassandra][:opscenter][:checksum] = "568b9e8767a0ed1bc7f101f39cf400f63fbba4f7dceefafab19c608aaf386950"
+default[:cassandra][:opscenter][:version] = "4.1.2"
+default[:cassandra][:opscenter][:src_url] = "http://downloads.datastax.com/community/opscenter-#{node['cassandra']['opscenter']['version']}.tar.gz"
+default[:cassandra][:opscenter][:checksum] = "1d61404bc7855d7002fea15fcfa7fcc8500e27ba450c4b9eee7db74cb0613967"
 
 # We create fill in this attribute dynamically mid-chef-run on the host that installs the server and generates the package.
 default[:cassandra][:opscenter][:agent][:checksum] = nil
