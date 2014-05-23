@@ -18,6 +18,7 @@ default[:cassandra][:priam_multiregion_enable] = nil
 default[:cassandra][:opscenter][:user] = "opscenter"
 default[:cassandra][:opscenter][:group] = "opscenter"
 
+
 # A top level directory attribute is provided should you wish to install elsewhere.
 default[:cassandra][:opscenter][:parentdir] = "/opt"
 default[:cassandra][:opscenter][:home] = "#{node[:cassandra][:opscenter][:parentdir]}/opscenter"
@@ -32,3 +33,9 @@ default[:cassandra][:opscenter][:agent][:checksum] = nil
 
 # For agent distribution and proxying/redirect to the opscenter interface on the default http port
 default[:cassandra][:opscenter][:server_port] = "8888"
+
+# By default it seems SSL doesn't work on version 4.x, but if 3.x is used it works fine.
+# This attribute can be used to force SSL agent communications. YMMV. default off.
+default[:cassandra][:opscenter][:use_ssl] = "0"
+
+
