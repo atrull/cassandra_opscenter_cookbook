@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: cassandra-opscenter
-# Recipe:: opscenter-agent
+# Recipe:: datastax-agent
 #
 # Copyright 2013 Medidata Solutions Worldwide
 #
@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-Chef::Log.info("Installing Opscenter Agent")
+Chef::Log.info("Installing Datastax Agent")
 
 # Required for IO reporting
 package "sysstat"
@@ -43,38 +43,38 @@ remote_file "#{Chef::Config[:file_cache_path]}/#{$LEADEREC2PUBLICHOSTNAME}-opsce
   mode "0644"
   retries 10
   checksum $LEADERAGENTCHECKSUM
-  notifies :run, "bash[Opscenter Agent Installation]", :immediately
+  notifies :run, "bash[Datastax Agent Installation]", :immediately
 end
 
 # Install the Agent according to the Documentation - which we hope has been fixed.
-bash "Opscenter Agent Installation" do
+bash "Datastax Agent Installation" do
   code <<-EOH
-  cd /tmp/ && tar zxvf #{Chef::Config[:file_cache_path]}/#{$LEADEREC2PUBLICHOSTNAME}-opscenter-#{node[:cassandra][:opscenter][:version]}-agent.tar.gz && cd agent && ./bin/install_agent.sh opscenter-agent.#{PACKAGESUFFIX} #{$LEADEREC2PUBLICHOSTNAME}
+  cd /tmp/ && tar zxvf #{Chef::Config[:file_cache_path]}/#{$LEADEREC2PUBLICHOSTNAME}-opscenter-#{node[:cassandra][:opscenter][:version]}-agent.tar.gz && cd agent && ./bin/install_agent.sh datastax-agent.#{PACKAGESUFFIX} #{$LEADEREC2PUBLICHOSTNAME}
   EOH
-  not_if "dpkg -l opscenter-agent | grep #{node[:cassandra][:opscenter][:version]} && grep #{$LEADEREC2PUBLICHOSTNAME} /var/lib/opscenter-agent/conf/address.yaml"
-  notifies :create, "template[/var/lib/opscenter-agent/conf/address.yaml]", :immediately
-  notifies :restart, "service[opscenter-agent]", :immediately
+  not_if "dpkg -l datastax-agent | grep #{node[:cassandra][:opscenter][:version]} && grep #{$LEADEREC2PUBLICHOSTNAME} /var/lib/datastax-agent/conf/address.yaml"
+  notifies :create, "template[/var/lib/datastax-agent/conf/address.yaml]", :immediately
+  notifies :restart, "service[datastax-agent]", :immediately
 end
 
-# Opscenter Agent configuration - differs between single and multi region setups
+# Datastax Agent configuration - differs between single and multi region setups
 case node[:cassandra][:priam_multiregion_enable]
 when "true"
-  template "/var/lib/opscenter-agent/conf/address.yaml" do
+  template "/var/lib/datastax-agent/conf/address.yaml" do
     variables :LEADEREC2PUBLICHOSTNAME => $LEADEREC2PUBLICHOSTNAME
     source "multiregion-address.yaml.erb"
     mode      "0644"
-    notifies :restart, "service[opscenter-agent]", :immediately
+    notifies :restart, "service[datastax-agent]", :immediately
   end
 else
-  template "/var/lib/opscenter-agent/conf/address.yaml" do
+  template "/var/lib/datastax-agent/conf/address.yaml" do
     variables :LEADEREC2PUBLICHOSTNAME => $LEADEREC2PUBLICHOSTNAME
     source "singleregion-address.yaml.erb"
     mode      "0644"
-    notifies :restart, "service[opscenter-agent]", :immediately
+    notifies :restart, "service[datastax-agent]", :immediately
   end
 end
 
-# We call the opscenter-agent service resource so it must be specified somewhere.
-service "opscenter-agent" do
+# We call the datastax-agent service resource so it must be specified somewhere.
+service "datastax-agent" do
   action :start
 end
