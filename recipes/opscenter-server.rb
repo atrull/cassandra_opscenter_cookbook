@@ -86,7 +86,16 @@ execute "Start Datastax OpsCenter" do
   user      "#{node[:cassandra][:opscenter][:user]}"
   group     "#{node[:cassandra][:opscenter][:group]}"
   cwd       node[:cassandra][:opscenter][:home]
+  notifies :run, "bash[Short Delay for Opscenter Server Startup]", :immediately
   not_if    "pgrep -f start_opscenter.py"
+end
+
+# We cause a delay after startup so that the agent.tar.gz can be created and permissions set afterwards
+bash "Short Delay for Opscenter Server Startup" do
+  code <<-EOH
+  sleep 15
+  EOH
+  action :nothing
 end
 
 # Run setup to create the agent.tar.gz
@@ -95,14 +104,14 @@ execute "Run Datastax Opscenter Setup" do
   user      "#{node[:cassandra][:opscenter][:user]}"
   group     "#{node[:cassandra][:opscenter][:group]}"
   cwd       node[:cassandra][:opscenter][:home]
-  notifies :run, "bash[Short Delay for Opscenter Server Startup]", :immediately
+  notifies :run, "bash[Short Delay for Opscenter Agent File Creation]", :immediately
   not_if { ::File.exists?("#{node[:cassandra][:opscenter][:home]}/agent.tar.gz") }
 end
 
 # We cause a delay after startup so that the agent.tar.gz can be created and permissions set afterwards
-bash "Short Delay for Opscenter Server Startup" do
+bash "Short Delay for Opscenter Agent File Creation" do
   code <<-EOH
-  sleep 15
+  sleep 5
   EOH
   action :nothing
 end
