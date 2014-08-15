@@ -3,6 +3,11 @@ driver_plugin: vagrant
 driver_config:
   require_chef_omnibus: true
 
+provisioner:
+  name: chef_zero
+  client_rb:
+    ssl_verify_mode: :verify_none # Chef outputs an ugly SSL warning otherwise
+
 platforms:
 - name: ubuntu-12.04
   driver_config:
