@@ -28,5 +28,22 @@ platforms:
 
 suites:
 - name: default
-  run_list: []
-  attributes: {}
+  run_list:
+    - recipe[apt] # get updated package list for java
+    - recipe[java]
+    - recipe[cassandra-opscenter::default]
+    - role[cassandra-test-cluster]
+  attributes:
+    ec2:
+      public_hostname: localtest.me
+
+- name: non_first_role
+  run_list:
+    - recipe[apt]
+    - recipe[java]
+    - recipe[cassandra-opscenter::default]
+    - role[another-role]
+    - role[cassandra-test-cluster]
+  attributes:
+    ec2:
+      public_hostname: localtest.me

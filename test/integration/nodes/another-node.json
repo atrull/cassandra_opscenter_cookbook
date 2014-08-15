@@ -1,0 +1,9 @@
+{
+  "id": "another-node",
+  "run_list": [
+    "role[another-role]"
+  ],
+  "automatic": {
+    "ipaddress": "0.1.2.3"
+  }
+}
