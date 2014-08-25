@@ -19,11 +19,18 @@
 
 ## Simplistic leader election
 node.save
-peers = search(:node, "roles:#{node[:roles].first}" )
+# Find peers based on an attribute, fall back to the first role in on this node
+if node[:cassandra][:opscenter][:cluster_role]
+  peer_search_role = node[:cassandra][:opscenter][:cluster_role]
+else
+  peer_search_role = node[:roles].first
+end
+
+peers = search(:node, "roles:#{peer_search_role}" )
 leader = peers.sort{|a,b| a.name <=> b.name}.first || node # the "or" covers the case where node is the first db
 
 # Some reporting on the election
-Chef::Log.info("cassandra-opscenter LeaderElection: #{node[:roles].first} Leader is : #{leader.name} #{leader.ec2.public_hostname} #{leader.ipaddress}")
+Chef::Log.info("cassandra-opscenter LeaderElection: #{peer_search_role} Leader is : #{leader.name} #{leader.ec2.public_hostname} #{leader.ipaddress}")
 
 # Set some global vars to be used in the agent recipe
 $LEADERNAME = leader.name

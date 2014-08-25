@@ -38,4 +38,5 @@ default[:cassandra][:opscenter][:server_port] = "8888"
 # This attribute can be used to force SSL agent communications. YMMV. default off.
 default[:cassandra][:opscenter][:use_ssl] = "0"
 
-
+# Role name for this cluster to search for. Defaults to first role on node.
+default[:cassandra][:opscenter][:cluster_role] = nil

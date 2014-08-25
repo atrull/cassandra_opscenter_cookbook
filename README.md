@@ -23,6 +23,8 @@ This cookbook holds certain assumptions to be true in order to easily manage its
 ##### B) All members of the cluster share the same UNIQUE chef role and this is the first role in the list of roles. i.e. cassandra-cluster-one or product-production-casdb.
 ###### Reason: The unique role is used to search for other cluster members for shared information. If you want to extend/improve this please submit patches.
 
+Note: an attribute has been added that will allow you to specify the `role` you want to search on, it may not be the first one in the run list. Set `node[:cassandra][:opscenter][:cluster_role]` to your desired role name for this to work.
+
 ##### C) Connectivity between cluster members is suffiently open to allow for agent distribution and agent connectivity. Typically you should have a security group that allows relatively open access from that security group on port 80 for agent distrubtion.
 ###### Reason: Nothing will work without connectivity anyway. No node is an island.
 
@@ -91,5 +93,6 @@ Authors
 
 * Author: Alex Trull <atrull@mdsol.com>
 * Author: Benton Roberts <broberts@mdsol.com>
+* Author: Mike Fiedler <miketheman@gmail.com>
 
 Copyright: 2013–2013 Medidata Solutions, Inc.
